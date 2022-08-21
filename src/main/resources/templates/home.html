@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Double Groove Records</title>
+    <script th:src="@{dist/main.js}" type="application/javascript"></script>
+    <link th:href="@{dist/css/main.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="container">
+    <nav>
+        <div>
+            <h1>Double Groove Records</h1>
+            <p>Music makes the world go round!</p>
+        </div>
+        <ol>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Artists</a></li>
+            <li><a href="#">Albums</a></li>
+        </ol>
+    </nav>
+
+    <div class="content">
+        <div class="product-group-container">
+            <h3 class="product-group-name">flash sale</h3>
+            <div class="row">
+                <div th:each="product : ${productGroups.products}" class="product">
+                    <img class="album-art" th:src="${product.imageUrl}"
+                         alt="${product.albumTitle} + ${product.artist.name}"
+                         width="100" height="100">
+                    <p class="album-title" th:text="${product.albumTitle}"></p>
+                    <p class="artist">By: <span th:text="${product.artists[0].name}"></span>
+                </div>
+            </div>
+            <div class="shelf"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

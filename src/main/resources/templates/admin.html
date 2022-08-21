@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+</head>
+<body>
+    <div class="container">
+        <h3>Edit the Product Group</h3>
+        <a id="edit-product-group-link" th:href="@{'/admin/group/{id}/edit'(id=${productGroupId})}">Edit the ProductGroup</a>
+    </div>
+</body>
+</html>
