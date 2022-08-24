@@ -57,9 +57,11 @@ module.exports = {
 
   devServer: {
     open: true,
-    host: 'localhost',
+    host: '127.0.0.1',
     port: 3000,
-    contentBase: path.resolve(__dirname, '../src/main/resources/static/dist'),
+    static: {
+      directory: path.resolve(__dirname, '../src/main/resources/static/dist')
+    },
     hot: true,
   }
 }

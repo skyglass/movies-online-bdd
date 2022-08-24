@@ -88,4 +88,10 @@ public class JdbcProductGroupRepository implements ProductGroupRepository {
         Long productGroupId = 1L;
         return new ProductGroup(productGroupId, products);
     }
+
+    @Override
+    public void delete(Long id) {
+        jdbcTemplate.update("delete from product_group_products where product_group_id = ?", id);
+        //jdbcTemplate.update("delete from product_group where id = ?", id);
+    }
 }

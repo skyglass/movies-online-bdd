@@ -19,7 +19,7 @@ public class frontendDevProxy {
         String resourcePath = request.getRequestURL().toString().split("/dist/")[1];
         System.out.println(String.format("Fetching Resource: %s", resourcePath));
         RestTemplate restTemplate = new RestTemplate();
-        String devResourcePath = String.format("http://localhost:3000/%s", resourcePath);
+        String devResourcePath = String.format("http://127.0.0.1:3000/%s", resourcePath);
         return restTemplate.exchange(devResourcePath, HttpMethod.GET, null, String.class);
     }
 }

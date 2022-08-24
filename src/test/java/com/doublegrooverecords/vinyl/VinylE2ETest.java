@@ -8,11 +8,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 
+import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,10 +25,19 @@ class VinylE2ETest {
 
     WebDriver driver;
 
+    @Autowired
+    JdbcProductGroupRepository productGroupRepository;
+
     @BeforeEach
     public void setUp() {
         driver = new ChromeDriver(new ChromeOptions().setHeadless(true));
-        driver.manage().timeouts().implicitlyWait(1000L, TimeUnit.MILLISECONDS);
+        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000L));
+
+        long expectedId = 1L;
+        ProductGroup productGroup = productGroupRepository.findById(expectedId);
+
+        assertThat(productGroup).hasFieldOrPropertyWithValue("id", expectedId);
+        assertThat(productGroup.getProducts()).hasSize(4);
     }
 
     @AfterEach
@@ -75,7 +85,7 @@ class VinylE2ETest {
     }
 
     private void givenUserOnAdminPage() {
-        driver.get(String.format("http://localhost:%d/admin", port));
+        driver.get(String.format("http://127.0.0.1:%d/admin", port));
     }
 
     private void thenUserSeesProductGroup() {
@@ -99,7 +109,7 @@ class VinylE2ETest {
     }
 
     private void givenUserOnHomePage() {
-        driver.get(String.format("http://localhost:%d", port));
+        driver.get(String.format("http://127.0.0.1:%d", port));
     }
 
     static private String defaultImageUrl() {

@@ -1,14 +1,17 @@
 package com.doublegrooverecords.vinyl;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class JdbcProductGroupRepositoryTest {
     @Autowired
     JdbcProductGroupRepository productGroupRepository;
@@ -19,7 +22,7 @@ public class JdbcProductGroupRepositoryTest {
         ProductGroup productGroup = productGroupRepository.findById(expectedId);
 
         assertThat(productGroup).hasFieldOrPropertyWithValue("id", expectedId);
-        assertThat(productGroup.getProducts()).hasSizeGreaterThan(3);
+        assertThat(productGroup.getProducts()).hasSize(4);
     }
 
     @Test
