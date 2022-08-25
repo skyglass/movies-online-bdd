@@ -8,6 +8,4 @@ public interface ProductGroupRepository {
     ProductGroup findById(Long id);
 
     ProductGroup first();
-
-    void delete(Long id);
 }

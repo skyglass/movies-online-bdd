@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Purchase Complete</title>
+</head>
+<body>
+    <section layout:fragment="content">
+        <h1 data-testid="order-complete">Order Complete! 🎉</h1>
+
+        <div class="products" th:each="product : ${order.products}">
+            <span class="album-title" th:text="${product.albumTitle}"></span>
+            @ <span th:text="${#numbers.formatCurrency(product.price)}"></span>
+        </div>
+        <p>Total: <span data-testid='total' th:text="${#numbers.formatCurrency(order.total)}"></span></p>
+
+        <section>
+            <p>Shipping to:</p>
+            <p>Street Address 1: <span th:text="${order.streetAddress1}"></span></p>
+            <p>Street Address 2: <span th:text="${order.streetAddress2}"></span></p>
+            <p>State Name: <span th:text="${order.stateName}"></span></p>
+            <p>City: <span th:text="${order.city}"></span></p>
+            <p>Zip: <span th:text="${order.zip}"></span></p>
+            <p>Shipping Cost: <span th:text="${order.shippingCost}"></span></p>
+        </section>
+    </section>
+</body>
+</html>
+

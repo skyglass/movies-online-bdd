@@ -24,6 +24,7 @@ describe('ProductGroupEditor', () => {
         const productGroup = {
           products: [],
           id: 1,
+          name: 'some name',
         };
         const wrapper = render(
             <ProductGroupEditor productGroup={productGroup} />,
@@ -51,6 +52,7 @@ describe('ProductGroupEditor', () => {
             },
           ],
           id: 1,
+          name: 'some name',
         };
 
         const wrapper = render(
@@ -95,6 +97,7 @@ describe('ProductGroupEditor', () => {
         const queryText = 'Bobby';
         const noProducts = {
           products: [],
+          name: 'some name',
         };
 
         const results = [
@@ -134,6 +137,7 @@ describe('ProductGroupEditor', () => {
         const queryText = 'Bobby';
         const noProducts = {
           products: [],
+          name: 'some name',
         };
 
         const expectedArtist = {name: 'Bobby Joel'};
@@ -167,6 +171,38 @@ describe('ProductGroupEditor', () => {
           const searchResults = wrapper.getByTestId('search-results');
           expectAlbum(searchResults, expectedAlbum);
         });
+      });
+    });
+  });
+
+  describe('product group name', () => {
+    it('displays the name of the product group', () => {
+      const productGroup = {
+        name: 'A_Name_For_This_Group',
+        products: [],
+      };
+
+      const wrapper = render(<ProductGroupEditor productGroup={productGroup}/>);
+
+      const productGroupName = wrapper.getByTestId('product-group-name');
+      expect(productGroupName).toHaveValue(productGroup.name);
+    });
+
+    describe('when the product group name is changed', () => {
+      it('displays the updates', () => {
+        const newProductGroupName = 'changed_name';
+        const productGroup = {
+          name: 'A_Name_For_This_Group',
+          products: [],
+        };
+
+        const wrapper = render(<ProductGroupEditor productGroup={productGroup}/>);
+        const productGroupName = wrapper.getByTestId('product-group-name');
+
+        userEvent.clear(productGroupName);
+        userEvent.type(productGroupName, newProductGroupName);
+
+        expect(wrapper.getByTestId('product-group-name')).toHaveValue(newProductGroupName);
       });
     });
   });

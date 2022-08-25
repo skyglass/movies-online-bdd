@@ -23,6 +23,7 @@ public class JdbcProductGroupRepository implements ProductGroupRepository {
     @Transactional
     public void update(ProductGroup productGroup) {
         jdbcTemplate.update("delete from product_group_products where product_group_id = ?", productGroup.getId());
+        jdbcTemplate.update("update product_group pg set pg.name = ? where id = ?", productGroup.getName(), productGroup.getId());
 
         jdbcTemplate.batchUpdate(
                 "insert into product_group_products (product_group_id, product_id) values (?, ?);",
@@ -43,7 +44,7 @@ public class JdbcProductGroupRepository implements ProductGroupRepository {
     @Override
     @Transactional
     public ProductGroup findById(Long id) {
-        List<Product> products = jdbcTemplate.query("select p.id, a.name as artist_name, album_title, image_location from product_group pg " +
+        List<Product> products = jdbcTemplate.query("select p.id, a.name as artist_name, album_title, image_location, price from product_group pg " +
                         "join product_group_products pgp on pgp.product_group_id = pg.id " +
                         "join dg_product p on pgp.product_id = p.id " +
                         "join prod_artists pa on p.id = pa.product_id " +
@@ -55,19 +56,24 @@ public class JdbcProductGroupRepository implements ProductGroupRepository {
                                 rs.getLong("id"),
                                 rs.getString("album_title"),
                                 new Artist(rs.getString("artist_name")),
-                                rs.getString("image_location")
-                        );
+                                rs.getString("image_location"),
+                                rs.getBigDecimal("price").movePointLeft(2));
                     }
                 }, id
         );
 
         Long productGroupId = 1L;
-        return new ProductGroup(productGroupId, products);
+        return jdbcTemplate.queryForObject("select pg.name as name from product_group pg where id = ?", new RowMapper<ProductGroup>() {
+            @Override
+            public ProductGroup mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new ProductGroup(productGroupId, products, rs.getString("name"));
+            }
+        }, productGroupId);
     }
 
     @Override
     public ProductGroup first() {
-        List<Product> products = jdbcTemplate.query("select p.id, a.name as artist_name, album_title, image_location from product_group pg " +
+        List<Product> products = jdbcTemplate.query("select p.id, a.name as artist_name, album_title, image_location, price from product_group pg " +
                         "join product_group_products pgp on pgp.product_group_id = pg.id " +
                         "join dg_product p on pgp.product_id = p.id " +
                         "join prod_artists pa on p.id = pa.product_id " +
@@ -79,19 +85,18 @@ public class JdbcProductGroupRepository implements ProductGroupRepository {
                                 rs.getLong("id"),
                                 rs.getString("album_title"),
                                 new Artist(rs.getString("artist_name")),
-                                rs.getString("image_location")
-                        );
+                                rs.getString("image_location"),
+                                rs.getBigDecimal("price"));
                     }
                 }
         );
 
         Long productGroupId = 1L;
-        return new ProductGroup(productGroupId, products);
-    }
-
-    @Override
-    public void delete(Long id) {
-        jdbcTemplate.update("delete from product_group_products where product_group_id = ?", id);
-        //jdbcTemplate.update("delete from product_group where id = ?", id);
+        return jdbcTemplate.queryForObject("select pg.name as name from product_group pg where id = ?", new RowMapper<ProductGroup>() {
+            @Override
+            public ProductGroup mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new ProductGroup(productGroupId, products, rs.getString("name"));
+            }
+        }, productGroupId);
     }
 }

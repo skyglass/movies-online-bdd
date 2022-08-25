@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Double Groove Records</title>
+    <script th:src="@{/dist/main.js}" type="application/javascript"></script>
+    <link th:href="@{/dist/css/main.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="container">
+    <nav>
+        <div>
+            <h1><a href="/">Double Groove Records</a></h1>
+            <p>Music makes the world go round!</p>
+        </div>
+        <ol>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Artists</a></li>
+            <li><a href="#">Albums</a></li>
+        </ol>
+        <a class="cart" href="/cart">Cart</a>
+    </nav>
+
+    <div class="content">
+        <section layout:fragment="content">
+        </section>
+    </div>
+</div>
+</body>
+</html>

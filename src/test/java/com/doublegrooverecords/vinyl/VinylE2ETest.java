@@ -1,49 +1,15 @@
 package com.doublegrooverecords.vinyl;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 
-import java.time.Duration;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class VinylE2ETest {
-
-    @LocalServerPort
-    int port;
-
-    WebDriver driver;
-
-    @Autowired
-    JdbcProductGroupRepository productGroupRepository;
-
-    @BeforeEach
-    public void setUp() {
-        driver = new ChromeDriver(new ChromeOptions().setHeadless(true));
-        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000L));
-
-        long expectedId = 1L;
-        ProductGroup productGroup = productGroupRepository.findById(expectedId);
-
-        assertThat(productGroup).hasFieldOrPropertyWithValue("id", expectedId);
-        assertThat(productGroup.getProducts()).hasSize(4);
-    }
-
-    @AfterEach
-    public void tearDown() {
-        driver.close();
-    }
+class VinylE2ETest extends EndToEndTest {
+    private String productGroupName;
 
     @Test
     void adminEditsProductGroup() {
@@ -52,12 +18,23 @@ class VinylE2ETest {
 
         givenUserOnAdminPage();
         whenTheyEditProductGroup();
+        andTheyEditTheProductGroupName();
         andTheyAddProduct();
         thenTheySeeProductInProductGroup();
 
         whenTheySaveChanges();
         givenUserOnHomePage();
         thenTheySeeProductOnHomePage();
+        andTheySeeTheProductGroupName();
+    }
+
+    private void andTheySeeTheProductGroupName() {
+        assertThat(findByTestId("product-group-name").getText()).contains(productGroupName);
+    }
+
+    private void andTheyEditTheProductGroupName() {
+        productGroupName = "Exciting Products";
+        findByTestId("product-group-name").sendKeys(productGroupName);
     }
 
     private void thenTheySeeProductOnHomePage() {
@@ -106,10 +83,6 @@ class VinylE2ETest {
             new UIProduct("Hand Me Housing", "The stationary boulders", defaultImageUrl()),
             new UIProduct("aftergym", "The stationary boulders", defaultImageUrl())
         );
-    }
-
-    private void givenUserOnHomePage() {
-        driver.get(String.format("http://127.0.0.1:%d", port));
     }
 
     static private String defaultImageUrl() {

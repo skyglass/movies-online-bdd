@@ -5,12 +5,16 @@ function ProductGroupEditor(props) {
   // useState is like instance variables for React functional components
   const [products, setProducts] = useState(props.productGroup?.products || []);
   const onAdd = (t) => setProducts([...products, t]);
+  const [productGroupName, setProductGroupName] = useState(props.productGroup?.name);
 
   return (
     <div className="admin">
       <h1>Edit ProductGroup</h1>
       <SearchBox onAdd={onAdd} />
       <form data-testid="product-group" method="POST" action={`/admin/group/${props.productGroup?.id}`}>
+        <input data-testid="product-group-name" name="name" value={productGroupName}
+          onChange={(event) => setProductGroupName(event.target.value)}
+        />
         <button type="submit" className="save-button">Save</button>
         {products.map((product, i) => {
           return (
