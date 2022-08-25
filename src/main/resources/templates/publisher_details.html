@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Publisher Details</title>
+</head>
+<body>
+    <h1>Publisher Details</h1>
+    <a data-testid="edit-publisher" th:href="@{'/admin/publisher/{id}/edit'(id=${publisher.id})}">Edit</a>
+    <p>
+        Name:
+        <span data-testid="publisher-name" th:text="${publisher.name}"></span>
+    </p>
+    <p>
+        Short Name:
+        <span data-testid="publisher-short-name" th:text="${publisher.shortName}"></span>
+    </p>
+    <p>
+        Contact Name:
+        <span data-testid="publisher-contact-name" th:text="${publisher.contactName}"></span>
+    </p>
+    <p>
+        Contact Number:
+        <span data-testid="publisher-contact-number" th:text="${publisher.contactNumber}"></span>
+    </p>
+</body>
+</html>

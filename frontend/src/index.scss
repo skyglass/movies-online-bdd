@@ -17,6 +17,11 @@ body {
   }
 }
 
+// HACK: will fix later
+.publisher-page .container .content {
+  height: auto;
+}
+
 .row {
   display: flex;
   justify-content: space-between;
@@ -47,6 +52,8 @@ h3 {
 nav {
   display: flex;
   background-color: darken(#7980a2ff, 20%);
+  justify-content: space-between;
+  align-items: center;
 
   border-bottom: 2px solid #aa7c56ff;
   color: #f5f1eeff;
@@ -64,6 +71,7 @@ nav {
 
   .cart {
     color: white;
+    text-decoration: none;
   }
 
   ol {
@@ -133,8 +141,13 @@ nav {
   width: 100vw;
   height: 100vh;
   display: grid;
+  padding: 24px;
   grid-template-columns: repeat(12, 1fr);
   grid-template-rows: repeat(6, 1fr);
+
+  h2 {
+    text-transform: capitalize;
+  }
 
   button {
     width: 120px;
@@ -144,6 +157,67 @@ nav {
   input {
     &[type=text] {
       height: 30px;
+    }
+  }
+
+  .sales {
+    grid-row: 2 / span 1;
+    grid-column: 1 / span 11;
+  }
+
+  .metrics {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .metric {
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 30%;
+
+    .metric-title {
+      font-weight: bold;
+    }
+
+    .metric-value {
+      font-size: large;
+    }
+  }
+
+  .most-purchased {
+    grid-row: 3 / span 1;
+    grid-column: 1 / span 11;
+  }
+
+  .publisher-field {
+    margin: 12px 0;
+  }
+
+  .royalties {
+    grid-row: 4 / span 1;
+    grid-column: 1 / span 11;
+  }
+
+  // Hacky implementation until we hire a designer
+  li {
+    &.most-purchased-product {
+      &.increased::before {
+        content: '↑';
+        color: green;
+      }
+
+      &.decreased::before {
+        content: '↓';
+        color: red;
+      }
+
+      &.new-to-list::before {
+        content: '★';
+        color: purple;
+      }
     }
   }
 

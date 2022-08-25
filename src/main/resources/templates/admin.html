@@ -9,5 +9,13 @@
         <h3>Edit the Product Group</h3>
         <a id="edit-product-group-link" th:href="@{'/admin/group/{id}/edit'(id=${productGroupId})}">Edit the ProductGroup</a>
     </div>
+    <div>
+        <h3>Sales Report</h3>
+        <a th:href="@{/admin/sales}" data-testid="sales-panel">Sales Panel</a>
+    </div>
+    <div>
+        <h3>Publishers</h3>
+        <a th:href="@{/admin/publisher}" data-testid="view-publishers">Publishers</a>
+    </div>
 </body>
 </html>

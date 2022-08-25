@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Publishers</title>
+</head>
+<body>
+    <ul>
+      <li th:each="publisher : ${publishers}" class="publisher">
+          <a th:href="@{'/admin/publisher/{id}'(id=${publisher.id})}" th:attr="data-testid=${'publisher-' + publisher.id + '-link'}" th:text="${publisher.name}"></a>
+      </li>
+    </ul>
+</body>
+</html>

@@ -27,7 +27,9 @@ public class CouponDiscount {
                 product.albumTitle,
                 product.getArtists().get(0),
                 product.getImageUrl(),
-                Discount.TEN_PERCENT.apply(product.getPrice())
+                Discount.TEN_PERCENT.apply(product.getPrice()),
+                null,
+                null
         );
     }
 }

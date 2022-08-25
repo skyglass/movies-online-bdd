@@ -1,9 +1,22 @@
+create table if not exists manufacturer (
+    id identity,
+    name nvarchar,
+    short_name nvarchar(4),
+    contact_number nvarchar(15),
+    contact_name nvarchar
+);
+
 create table if not exists dg_product (
     id identity,
     album_title nvarchar(max),
     image_location nvarchar(max),
-    price bigint not null
+    price bigint not null,
+    cost bigint not null,
+    m_id bigint not null
 );
+
+alter table dg_product
+    add foreign key (m_id) references manufacturer(id);
 
 create table if not exists artist (
     id identity,

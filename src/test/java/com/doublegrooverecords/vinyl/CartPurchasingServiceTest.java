@@ -51,7 +51,7 @@ public class CartPurchasingServiceTest {
 
         cartPurchasingService.purchaseCart(customerId);
 
-        List<Order> allOrders = findAllOrders();
+        List<Order> allOrders = findAllOrders(customerId);
 
         assertThat(allOrders).hasSize(1);
 
@@ -76,7 +76,7 @@ public class CartPurchasingServiceTest {
         assertThat(actual.zip).isEqualTo(expected.zip);
     }
 
-    private List<Order> findAllOrders() {
+    private List<Order> findAllOrders(long customerCode) {
         Map<Long, Order> orders = new HashMap<>();
 
         jdbcTemplate.query("select o.id, " +
@@ -90,7 +90,8 @@ public class CartPurchasingServiceTest {
                 "product_id, " +
                 "li.charged_price " +
                 "from mrt_order o " +
-                "join mrt_order_line_items li on li.mrt_order_id = o.id", (RowMapper<Order>) (rs, rowNum) -> {
+                "join mrt_order_line_items li on li.mrt_order_id = o.id " +
+                "where customer_code = ? ", (RowMapper<Order>) (rs, rowNum) -> {
             Long orderId = rs.getLong("id");
 
             if (orders.containsKey(orderId)) {
@@ -100,7 +101,7 @@ public class CartPurchasingServiceTest {
                 List<LineItem> lineItems = new ArrayList<>();
                 lineItems.add(new LineItem(rs.getLong("product_id"), rs.getBigDecimal("charged_price")));
                 Order order = new Order(
-                        rs.getLong("customer_code"),
+                        rs.getLong("id"), rs.getLong("customer_code"),
                         rs.getBigDecimal("shipping_cost"),
                         new Address(rs.getString("street_address_1"),
                                 rs.getString("street_address_2"),
@@ -113,9 +114,13 @@ public class CartPurchasingServiceTest {
             }
 
             return null;
-        });
+        }, customerCode);
 
-        return new ArrayList<>(orders.values());
+        return orders
+                .values()
+                .stream()
+                .sorted(Comparator.comparing(Order::getId))
+                .collect(Collectors.toList());
     }
 
     @Test
@@ -124,7 +129,7 @@ public class CartPurchasingServiceTest {
 
         cartPurchasingService.purchaseCart(customerId);
 
-        List<Order> allOrders = findAllOrders();
+        List<Order> allOrders = findAllOrders(customerId);
 
         Order order = allOrders.get(0);
         assertThat(order.getShippingPrice()).isEqualTo(new BigDecimal("2667"));
@@ -132,25 +137,25 @@ public class CartPurchasingServiceTest {
 
     @Test
     public void theShippingIsFree_whenThereAreManyStoresNearby() {
-        final Long customerNearThreeStores = 2L;
+        final Long customerNearTwoStores = 3L;
 
-        cartRepository.addToCart(customerNearThreeStores, productId);
-        cartPurchasingService.purchaseCart(customerNearThreeStores);
+        cartRepository.addToCart(customerNearTwoStores, productId);
+        cartPurchasingService.purchaseCart(customerNearTwoStores);
 
-        List<Order> allOrders = findAllOrders();
+        List<Order> allOrders = findAllOrders(customerNearTwoStores);
         assertThat(allOrders).hasSize(1);
         assertThat(allOrders.get(0).getShippingPrice()).isEqualTo(new BigDecimal("0"));
     }
 
     @Test
-    public void theShippingPriceIsFree_whenThereAreStoresNearTheCustomer() {
-        final Long customerNearOneStore = 3L;
+    public void theShippingPriceIsFree_whenThereIsOneStoreNearTheCustomer() {
+        final Long customerNearOneStore = 4L;
         Customer customer = customerRepository.findById(customerNearOneStore);
 
         cartRepository.addToCart(customerNearOneStore, productId);
         cartPurchasingService.purchaseCart(customer.getId());
 
-        List<Order> allOrders  = findAllOrders();
+        List<Order> allOrders  = findAllOrders(customerNearOneStore);
 
         assertThat(allOrders).hasSize(1);
         Order order = allOrders.get(0);
@@ -176,7 +181,7 @@ public class CartPurchasingServiceTest {
 
         assertThat(endingCount - numberOfPurchases).isEqualTo(startingCount);
 
-        List<Order> allOrders = findAllOrders();
+        List<Order> allOrders = findAllOrders(customerId);
         Order lastOrder = allOrders.get(allOrders.size() - 1);
         assertThat(lastOrder.lineItems.get(0).getChargedPrice()).isNotEqualTo(new BigDecimal("0"));
     }
@@ -194,12 +199,12 @@ public class CartPurchasingServiceTest {
             cartPurchasingService.purchaseCart(customerId, calendarWithDateToday);
         }
 
-        List<Order> allOrders = findAllOrders();
+        List<Order> allOrders = findAllOrders(customerId);
 
         Order order = allOrders.get(10);
         assertThat(order.getCustomerId()).isEqualTo(customerId);
-        assertThat(order.getShippingPrice()).isEqualTo(new BigDecimal("2667"));
-        assertThat(order.lineItems.get(0).getChargedPrice()).isEqualTo(new BigDecimal(0));
+        assertThat(order.getShippingPrice()).isEqualTo(new BigDecimal("2667").toString());
+        assertThat(order.lineItems.get(0).getChargedPrice()).isEqualTo(new BigDecimal(0).toString());
         assertThat(order.lineItems.get(0).getProductId()).isEqualTo(productId);
 
         LoyaltyCard loyaltyCard = loyaltyCardRepository.findOrCreateBy(customerId);
@@ -221,7 +226,7 @@ public class CartPurchasingServiceTest {
 
         cartPurchasingService.purchaseCart(customerId);
 
-        List<Order> allOrders = findAllOrders();
+        List<Order> allOrders = findAllOrders(customerId);
         assertThat(allOrders).hasSize(1);
 
         Order order = allOrders.get(0);
@@ -260,16 +265,22 @@ public class CartPurchasingServiceTest {
     }
 
     class Order {
+        Long id;
         Long customerId;
         BigDecimal shippingPrice;
         private Address address;
         List<LineItem> lineItems;
 
-        public Order(Long customerId, BigDecimal shippingPrice, Address address, List<LineItem> lineItems) {
+        public Order(Long id, Long customerId, BigDecimal shippingPrice, Address address, List<LineItem> lineItems) {
+            this.id = id;
             this.customerId = customerId;
             this.shippingPrice = shippingPrice;
             this.address = address;
             this.lineItems = lineItems;
+        }
+
+        public Long getId() {
+            return id;
         }
 
         Long getCustomerId() {
@@ -308,47 +319,4 @@ public class CartPurchasingServiceTest {
 
     // pre: The loyalty card is expired
     // ?
-
-    @Test
-    public void createsAnOrder() {
-        final long customerId = 1L;
-        Customer customer = customerRepository.findById(customerId);
-
-        Product firstProduct = productRepository.findAll().get(0);
-
-        cartRepository.addToCart(customerId, 1L);
-
-        cartPurchasingService.purchaseCart(customer.getId());
-
-        List<Map<String, String>> orderData = jdbcTemplate.query("select customer_code, shipping_cost, product_id from mrt_order o " +
-                "join mrt_order_line_items li on li.mrt_order_id = o.id", (RowMapper<Map<String, String>>) (rs, rowNum) -> {
-            return Map.of("cust_id", rs.getString("customer_code"), "ship_c", rs.getString("shipping_cost"), "pid", rs.getString("product_id"));
-        });
-
-        assertThat(orderData).hasSize(1);
-        assertThat(orderData.get(0)).containsEntry("cust_id", customer.getId().toString());
-        assertThat(orderData.get(0)).containsEntry("ship_c", new BigDecimal(6.52).multiply(new BigDecimal(3.025)).add(new BigDecimal(6.95)).multiply(new BigDecimal(100)).toBigInteger().toString());
-        assertThat(orderData.get(0)).containsEntry("pid", firstProduct.getId().toString());
-
-        customer.setZip(storeRepository.first().getZip());
-        customerRepository.update(customer);
-
-        cartRepository.addToCart(customerId, 1L);
-        cartPurchasingService.purchaseCart(customer.getId());
-
-        orderData = jdbcTemplate.query("select customer_code, shipping_cost, charged_price from mrt_order o " +
-                "join mrt_order_line_items li on o.id = li.mrt_order_id ", (RowMapper<Map<String, String>>) (rs, rowNum) -> {
-            return Map.of("cust_id", rs.getString("customer_code"), "ship_c", rs.getString("shipping_cost"), "charged", rs.getString("charged_price"));
-        });
-
-        assertThat(orderData).hasSize(2);
-        assertThat(orderData.get(1)).containsEntry("cust_id", customer.getId().toString());
-        assertThat(orderData.get(1)).containsEntry("ship_c", new BigDecimal(0).toString());
-        assertThat(orderData.get(1)).containsEntry("charged", new BigDecimal("9434").toString());
-
-        customer.setZip(storeRepository.first().getZip());
-        customerRepository.update(customer);
-    }
-
-
 }

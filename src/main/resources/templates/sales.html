@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sales Panel</title>
+    <link th:href="@{/dist/css/main.css}" rel="stylesheet"/>
+</head>
+<body>
+    <div class="admin">
+        <h1>Sales Panel: <span data-testid="current-quarter" th:text="${currentQuarter}"></span></h1>
+        <section class="sales">
+            <h2>The bottom line</h2>
+            <div class="metrics">
+            <div class="metric">
+                <p>
+                    <span class="metric-title">Total Products Sold:</span>
+                    <span class="metric-value" th:text="${totalSold}"></span>
+                </p>
+                <p>
+                    <span class="metric-title">Total Revenue:</span>
+                    <span class="metric-value" th:text="${#numbers.formatCurrency(totalRevenue)}"></span>
+                </p>
+            </div>
+            <div class="metric">
+                <p>
+                    <span class="metric-title">Total Profit:</span>
+                    <span class="metric-value" th:text="${#numbers.formatCurrency(profit)}"></span>
+                </p>
+                <p>
+                    <span class="metric-title">Total Cost:</span>
+                    <span class="metric-value" th:text="${#numbers.formatCurrency(cost)}"></span>
+                </p>
+            </div>
+            </div>
+        </section>
+        <section class="most-purchased">
+            <h2>Most Purchased Products</h2>
+            <ol>
+                <li class="most-purchased-product" th:classappend="${product.getPosition().getDisplayName()}" th:each="product : ${mostPurchased}" th:text="${product.getAlbumTitle()}"></li>
+            </ol>
+        </section>
+
+        <section class="royalties">
+            <h2>Royalties Owed</h2>
+            <div th:each="publisher : ${publishers}">
+                <p>Publisher: <span th:text="${publisher.getFirst().getName()}"></span></p>
+                <p>Check to: <span th:text="${publisher.getFirst().getContactName()}"></span></p>
+                <p>Amount Owed: <span th:text="${#numbers.formatCurrency(publisher.getSecond())}"></span></p>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

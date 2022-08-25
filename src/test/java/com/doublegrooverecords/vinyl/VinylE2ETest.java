@@ -61,10 +61,6 @@ class VinylE2ETest extends EndToEndTest {
         driver.findElement(By.id("edit-product-group-link")).click();
     }
 
-    private void givenUserOnAdminPage() {
-        driver.get(String.format("http://127.0.0.1:%d/admin", port));
-    }
-
     private void thenUserSeesProductGroup() {
         WebElement productGroupContainer = driver.findElement(By.className("product-group-container"));
 

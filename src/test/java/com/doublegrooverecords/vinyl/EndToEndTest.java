@@ -15,7 +15,7 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 abstract class EndToEndTest {
     @LocalServerPort
     int port;
@@ -35,6 +35,10 @@ abstract class EndToEndTest {
 
     void givenUserOnHomePage() {
         driver.get(String.format("http://127.0.0.1:%d", port));
+    }
+
+    void givenUserOnAdminPage() {
+        driver.get(String.format("http://127.0.0.1:%d/admin", port));
     }
 
     WebElement findByTestId(String testId) {

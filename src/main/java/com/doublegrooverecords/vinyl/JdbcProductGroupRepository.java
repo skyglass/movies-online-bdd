@@ -57,7 +57,9 @@ public class JdbcProductGroupRepository implements ProductGroupRepository {
                                 rs.getString("album_title"),
                                 new Artist(rs.getString("artist_name")),
                                 rs.getString("image_location"),
-                                rs.getBigDecimal("price").movePointLeft(2));
+                                rs.getBigDecimal("price").movePointLeft(2),
+                                null, null
+                        );
                     }
                 }, id
         );
@@ -86,7 +88,9 @@ public class JdbcProductGroupRepository implements ProductGroupRepository {
                                 rs.getString("album_title"),
                                 new Artist(rs.getString("artist_name")),
                                 rs.getString("image_location"),
-                                rs.getBigDecimal("price"));
+                                rs.getBigDecimal("price"),
+                                null, null
+                        );
                     }
                 }
         );

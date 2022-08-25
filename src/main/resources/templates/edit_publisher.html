@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Publisher</title>
+    <link th:href="@{/dist/css/main.css}" rel="stylesheet"/>
+</head>
+<body class="admin">
+<section class="container">
+    <h1>Edit Publisher</h1>
+    <form th:action="@{'/admin/publisher/{id}'(id=${publisher.id})}" method="post">
+        <div class="publisher-field">
+            <label for="name">Name:</label>
+            <input name="name" id="name" type="text" th:value="${publisher.name}" data-testid="publisher-name"/>
+        </div>
+        <div class="publisher-field">
+            <label for="short-name">Short Name:</label>
+            <input name="shortName" id="short-name" type="text" th:value="${publisher.shortName}" data-testid="publisher-short-name"/>
+        </div>
+        <div class="publisher-field">
+            <label for="contact-name">Contact Name:</label>
+            <input name="contactName" id="contact-name" type="text" th:value="${publisher.contactName}"
+                   data-testid="publisher-contact-name"/>
+        </div>
+        <div class="publisher-field">
+            <label for="contact-number">Contact Number:</label>
+            <input name="contactNumber" id="contact-number" type="text" th:value="${publisher.contactNumber}"
+                   data-testid="publisher-contact-number"/>
+        </div>
+        <button type="submit" data-testid="save-button">Save</button>
+    </form>
+</section>
+</body>
+</html>

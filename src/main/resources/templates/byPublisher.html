@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Products By Publisher</title>
+</head>
+<body>
+    <section layout:fragment="content">
+        <h1>By Publisher</h1>
+        <div th:each="publisher : ${publishers}">
+            <a th:text="${publisher.getName()}" th:href="${'/by-publisher/' + publisher.getId()}"></a>
+        </div>
+    </section>
+</body>
+</html>

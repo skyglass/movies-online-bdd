@@ -6,12 +6,9 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Repository
 public class OrderRepository {
@@ -76,7 +73,9 @@ public class OrderRepository {
                 "p.id as product_id, " +
                 "p.album_title, " +
                 "p.image_location, " +
+                "p.m_id, " +
                 "li.charged_price, " +
+                "p.cost, " +
                 "sum(li.charged_price) over(partition by o.id) as total " +
                 "from mrt_order o " +
                 "join mrt_order_line_items li on li.mrt_order_id = o.id " +
@@ -89,7 +88,10 @@ public class OrderRepository {
                         rs.getString("album_title"),
                         null,
                         rs.getString("image_location"),
-                        rs.getBigDecimal("charged_price").movePointLeft(2));
+                        rs.getBigDecimal("charged_price").movePointLeft(2),
+                        rs.getBigDecimal("cost").movePointLeft(2),
+                        rs.getLong("m_id")
+                );
 
                 long orderId = rs.getLong("order_id");
 
@@ -120,5 +122,73 @@ public class OrderRepository {
 
         Collection<Order> values = orderIdToOrder.values();
         return new ArrayList<Order>(values).get(values.size() - 1);
+    }
+
+    public List<Order> findBetweenDates(Date start, Date end) {
+        Map<Long, Order> orderIdToOrder = new HashMap<>();
+
+        List<Order> orders = jdbcTemplate.query("select " +
+                "o.id as order_id, " +
+                "customer_code, " +
+                "created_on, " +
+                "store_id, " +
+                "street_address_1, " +
+                "street_address_2, " +
+                "state_name, " +
+                "city, " +
+                "zip, " +
+                "shipping_cost, " +
+                "p.id as product_id, " +
+                "p.album_title, " +
+                "p.image_location, " +
+                "p.m_id, " +
+                "li.charged_price, " +
+                "p.cost, " +
+                "sum(li.charged_price) over(partition by o.id) as total " +
+                "from mrt_order o " +
+                "join mrt_order_line_items li on li.mrt_order_id = o.id " +
+                "join dg_product p on p.id = li.product_id " +
+                "where o.created_on between ? and ?" +
+                "order by created_on desc ", new RowMapper<Order>() {
+            @Override
+            public Order mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Product p = new Product(rs.getLong("product_id"),
+                        rs.getString("album_title"),
+                        null,
+                        rs.getString("image_location"),
+                        rs.getBigDecimal("charged_price").movePointLeft(2),
+                        rs.getBigDecimal("cost").movePointLeft(2),
+                        rs.getLong("m_id")
+                );
+
+                long orderId = rs.getLong("order_id");
+
+                Order order = orderIdToOrder.get(orderId);
+
+                if (order != null) {
+                    order.getProducts().add(p);
+                }
+                else {
+                    List<Product> products = new ArrayList<>();
+                    products.add(p);
+                    Order newOrder = new Order(orderId,
+                            rs.getLong("customer_code"),
+                            rs.getString("street_address_1"),
+                            rs.getString("street_address_2"),
+                            rs.getString("state_name"),
+                            rs.getString("city"),
+                            rs.getString("zip"),
+                            rs.getBigDecimal("shipping_cost"),
+                            rs.getBigDecimal("total").movePointLeft(2),
+                            products);
+                    orderIdToOrder.put(orderId, newOrder);
+                }
+
+                return null;
+            }
+        }, start, end);
+
+        Collection<Order> values = orderIdToOrder.values();
+        return new ArrayList<>(values);
     }
 }
