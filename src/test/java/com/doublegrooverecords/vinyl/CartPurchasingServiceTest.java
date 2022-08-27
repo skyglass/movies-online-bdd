@@ -11,9 +11,8 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.Map;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest()
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -42,8 +41,8 @@ public class CartPurchasingServiceTest {
     private final Long productId = 1L;
     private final Long secondProductId = 2L;
 
-    Address expectedAddress = new Address("1120 N Ashland Ave", null, "Illinois", "Chicago", "60622");
-    
+    Address expectedAddress = new Address("1120 N Ashland Ave", "", "Chicago", "Illinois", "60622");
+
     @Test
     public void orderCreatedFromCart() {
         cartRepository.addToCart(customerId, productId);

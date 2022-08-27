@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class CartProduct extends Product {
     public CartProduct(Long id, String albumTitle, Artist artist, String imageUrl, BigDecimal price) {
-        super(id, albumTitle, artist, imageUrl, price, null, null);
+        super(id, albumTitle, artist, imageUrl, price, null, null, null);
     }
 
     private Long quantity;

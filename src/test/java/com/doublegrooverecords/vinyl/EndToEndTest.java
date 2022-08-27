@@ -12,7 +12,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -38,7 +37,16 @@ abstract class EndToEndTest {
     }
 
     void givenUserOnAdminPage() {
+        signIn();
         driver.get(String.format("http://127.0.0.1:%d/admin", port));
+    }
+
+    void signIn() {
+        driver.get(String.format("http://127.0.0.1:%d/admin", port));
+        driver.findElement(By.id("username")).sendKeys("admin");
+        driver.findElement(By.id("password")).sendKeys("super");
+        driver.findElement(By.tagName("button")).click();
+        driver.findElement(By.className("container"));
     }
 
     WebElement findByTestId(String testId) {

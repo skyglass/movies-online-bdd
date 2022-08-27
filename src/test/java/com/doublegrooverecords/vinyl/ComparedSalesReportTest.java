@@ -24,7 +24,7 @@ class ComparedSalesReportTest {
 
     @Test
     void getMostPurchased_returnsNewToListPosition_whenPreviousQuarterHadNoProducts() {
-        final Product productOne = new Product(1L, null, null, null, null, null, null);
+        final Product productOne = new Product(1L, null, null, null, null, null, null, null);
 
         QuarterlySalesReport currentQuarter = mock(QuarterlySalesReport.class);
         when(currentQuarter.getMostPurchased()).thenReturn(List.of(productOne));
@@ -43,9 +43,9 @@ class ComparedSalesReportTest {
 
     @Test
     void getMostPurchased_returnsNoChange_whenProductIsInSamePosition() {
-        final Product productOne = new Product(1L, null, null, null, null, null, null);
+        final Product productOne = new Product(1L, null, null, null, null, null, null, null);
 
-        final Product differentInstanceProductOne = new Product(1L, null, null, null, null, null, null);
+        final Product differentInstanceProductOne = new Product(1L, null, null, null, null, null, null, null);
 
         QuarterlySalesReport currentQuarter = mock(QuarterlySalesReport.class);
         when(currentQuarter.getMostPurchased()).thenReturn(List.of(productOne));
@@ -64,8 +64,8 @@ class ComparedSalesReportTest {
 
     @Test
     void getMostPurchased_returnsIncreased_whenProductMovesUpList() {
-        final Product productOne = new Product(1L, null, null, null, null, null, null);
-        final Product productTwo = new Product(2L, null, null, null, null, null, null);
+        final Product productOne = new Product(1L, null, null, null, null, null, null, null);
+        final Product productTwo = new Product(2L, null, null, null, null, null, null, null);
 
         QuarterlySalesReport currentQuarter = mock(QuarterlySalesReport.class);
         when(currentQuarter.getMostPurchased()).thenReturn(List.of(productOne, productTwo));
@@ -84,8 +84,8 @@ class ComparedSalesReportTest {
 
     @Test
     void getMostPurchased_returnsDecreased_whenProductMovesDownList() {
-        final Product productOne = new Product(1L, null, null, null, null, null, null);
-        final Product productTwo = new Product(2L, null, null, null, null, null, null);
+        final Product productOne = new Product(1L, null, null, null, null, null, null, null);
+        final Product productTwo = new Product(2L, null, null, null, null, null, null, null);
 
         QuarterlySalesReport currentQuarter = mock(QuarterlySalesReport.class);
         when(currentQuarter.getMostPurchased()).thenReturn(List.of(productOne, productTwo));

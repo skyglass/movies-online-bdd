@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Page</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <h1 data-testid="product-name" th:text="${product.albumTitle}"></h1>
+
+    <div class="product">
+        <img class="album-art" th:src="${product.imageUrl}" />
+        <p data-testid="artist-name">By: <span class="artist" th:each="artist : ${product.artists}" th:text="${artist.name}"></span></p>
+        <p data-testid="price" class="price" th:text="${#numbers.formatCurrency(product.price)}"></p>
+
+        <strong>Description</strong>
+        <p data-testid="description" th:text="${product.description}"></p>
+    </div>
+
+    <form action="/cart/add" method="post">
+        <input type="hidden" name="product" th:value="${product.id}"/>
+        <select data-testid="quantity" name="quantity">
+            <option th:each="n : ${#numbers.sequence(1, 100)}" th:value="${n}" th:text="${n}"></option>
+        </select>
+        <button data-testid="add-to-cart-button" type="submit">Add to Cart</button>
+    </form>
+
+    <form action="/wishlist/add" method="post" th:if="${wishlistEnabled}">
+        <input type="hidden" name="product" th:value="${product.id}"/>
+        <button data-testid="add-to-wishlist-button" type="submit">Add to Wishlist</button>
+    </form>
+
+    <h3>Recommendations</h3>
+    <div class="row">
+        <div class="product" th:each="rec : ${recProducts}">
+            <img class="album-art" th:src="${rec.imageUrl}" />
+            <p class="album-title" th:text="${rec.albumTitle}"></p>
+            <p class="artist" th:each="artist : ${rec.artists}" th:text="${artist.name}"></p>
+        </div>
+    </div>
+</section>
+</body>
+</html>

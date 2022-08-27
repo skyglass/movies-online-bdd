@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout.html}">
+<head>
+  <meta charset="UTF-8">
+  <title>Wishlist</title>
+</head>
+<body>
+<section layout:fragment="content">
+  <h1 data-testid="header">Your Wishlist</h1>
+  <div class="row">
+    <div th:each="product : ${wishlist}"class="product">
+      <a th:attr="data-testid=@{'wishlist-product-{id}'(id=${product.id})}" th:href="@{'/product/{id}/{album}/'(id=${product.id}, album=${#strings.toLowerCase(#strings.replace(product.albumTitle, ' ', '-'))})}"><img class="album-art" th:src="${product.imageUrl}"
+                                                                                                                                                     alt="${product.albumTitle} + ${product.artist.name}" width="100" height="100">
+        <p th:attr="data-testid=@{'wishlist-product-{id}-name'(id=${product.id})}" th:text="${product.albumTitle}" class="album-title"></p></a>
+      <p th:attr="data-testid=@{'wishlist-artist-{id}-name'(id=${product.id})}" th:text="${product.artists[0].name}"></p>
+      <p th:attr="data-testid=@{'wishlist-price-{id}'(id=${product.id})}" class="price" th:text="${#numbers.formatCurrency(product.price)}"></p>
+    </div>
+  </div>
+</section>
+</body>
+</html>
+

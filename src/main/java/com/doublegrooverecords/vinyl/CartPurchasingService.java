@@ -48,7 +48,7 @@ public class CartPurchasingService {
         List<Product> list = new ArrayList<>();
         for (CartProduct p : cart.getProducts()) {
             for (int i = 0; i < p.getQuantity(); i++)
-                list.add(new Product(p.getId(), p.getAlbumTitle(), p.getArtists().get(0), p.getImageUrl(), p.getIndividualPrice(), null, null));
+                list.add(new Product(p.getId(), p.getAlbumTitle(), p.getArtists().get(0), p.getImageUrl(), p.getIndividualPrice(), null, null, null));
         }
         return list;
     }

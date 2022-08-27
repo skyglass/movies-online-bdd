@@ -29,6 +29,7 @@ public class CouponDiscount {
                 product.getImageUrl(),
                 Discount.TEN_PERCENT.apply(product.getPrice()),
                 null,
+                null,
                 null
         );
     }

@@ -10,11 +10,11 @@
         <div class="product-group-container">
             <h3 class="product-group-name" data-testid="product-group-name" th:text="${productGroups.name}"></h3>
             <div class="row">
-                <div th:each="product : ${productGroups.products}" class="product">
-                    <img class="album-art" th:src="${product.imageUrl}"
-                         alt="${product.albumTitle} + ${product.artist.name}"
-                         width="100" height="100">
-                    <p th:text="${product.albumTitle}" class="album-title"></p>
+                <div th:each="product : ${productGroups.products}" class="product" th:attr="data-testid=@{'product-id-{id}'(id=${product.id})}">
+                    <a th:href="@{'/product/{id}/{album}/'(id=${product.id}, album=${#strings.toLowerCase(#strings.replace(product.albumTitle, ' ', '-'))})}"><img class="album-art" th:src="${product.imageUrl}"
+                            alt="${product.albumTitle} + ${product.artist.name}"
+                            width="100" height="100">
+                        <p th:text="${product.albumTitle}" class="album-title"></p></a>
                     <p class="artist">By: <span th:text="${product.artists[0].name}"></span>
                     <p class="price" th:text="${#numbers.formatCurrency(product.price)}"></p>
                     <form action="/cart/add" method="post">

@@ -21,15 +21,16 @@ public class OrderRepository {
     @Transactional
     public void create(Order order) {
         final int onlineStoreId = 122;
-        Map<String, Object> customerData = new HashMap<>();
-        customerData.put("customer_code", order.getCustomerId());
-        customerData.put("created_on", new Date());
-        customerData.put("store_id", onlineStoreId);
-        customerData.put("street_address_1", order.getStreetAddress1());
-        customerData.put("state_name", order.getStateName());
-        customerData.put("city", order.getCity());
-        customerData.put("zip", order.getZip());
-        customerData.put("shipping_cost", order.getShippingCost().movePointRight(2));
+        Map<String, Object> customerData =
+                new HashMap<>(
+                        Map.of("customer_code", order.getCustomerId(),
+                                "created_on", new Date(),
+                                "store_id", onlineStoreId
+                                , "street_address_1", order.getStreetAddress1(),
+                                "state_name", order.getStateName(),
+                                "city", order.getCity(),
+                                "zip", order.getZip(),
+                                "shipping_cost", order.getShippingCost().movePointRight(2)));
 
         if (order.getStreetAddress2() != null) {
             customerData.put("street_address_2", order.getStreetAddress2());
@@ -90,8 +91,8 @@ public class OrderRepository {
                         rs.getString("image_location"),
                         rs.getBigDecimal("charged_price").movePointLeft(2),
                         rs.getBigDecimal("cost").movePointLeft(2),
-                        rs.getLong("m_id")
-                );
+                        rs.getLong("m_id"),
+                        null);
 
                 long orderId = rs.getLong("order_id");
 
@@ -99,8 +100,7 @@ public class OrderRepository {
 
                 if (order != null) {
                     order.getProducts().add(p);
-                }
-                else {
+                } else {
                     List<Product> products = new ArrayList<>();
                     products.add(p);
                     Order newOrder = new Order(orderId,
@@ -158,8 +158,8 @@ public class OrderRepository {
                         rs.getString("image_location"),
                         rs.getBigDecimal("charged_price").movePointLeft(2),
                         rs.getBigDecimal("cost").movePointLeft(2),
-                        rs.getLong("m_id")
-                );
+                        rs.getLong("m_id"),
+                        null);
 
                 long orderId = rs.getLong("order_id");
 
@@ -167,8 +167,7 @@ public class OrderRepository {
 
                 if (order != null) {
                     order.getProducts().add(p);
-                }
-                else {
+                } else {
                     List<Product> products = new ArrayList<>();
                     products.add(p);
                     Order newOrder = new Order(orderId,

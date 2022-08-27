@@ -8,12 +8,13 @@ import java.util.List;
 
 @Data
 public class Product {
-    public Product(Long id, String albumTitle, Artist artist, String imageUrl, BigDecimal price, BigDecimal cost, Long publisherId) {
+    public Product(Long id, String albumTitle, Artist artist, String imageUrl, BigDecimal price, BigDecimal cost, Long publisherId, String description) {
         this.id = id;
         this.albumTitle = albumTitle;
         this.imageUrl = imageUrl;
         this.price = price;
         this.cost = cost;
+        this.description = description;
         this.artists.add(artist);
         this.publisherId = publisherId;
     }
@@ -25,6 +26,7 @@ public class Product {
     final String imageUrl;
     private BigDecimal price;
     private BigDecimal cost;
+    private String description;
 
     @Override
     public int hashCode() {

@@ -15,12 +15,15 @@
             <p>Music makes the world go round!</p>
         </div>
         <ol>
-            <li><a href="#">Home</a></li>
+            <li><a href="/">Home</a></li>
             <li><a href="#">Artists</a></li>
             <li><a href="#">Albums</a></li>
             <li><a th:href="@{/by-publisher}">By Publisher</a></li>
         </ol>
         <a class="cart" href="/cart">Cart</a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit">Logout</button>
+        </form>
     </nav>
 
     <div class="content">

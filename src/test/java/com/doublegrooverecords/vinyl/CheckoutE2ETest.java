@@ -28,9 +28,9 @@ public class CheckoutE2ETest extends EndToEndTest {
     }
 
     private void whenTheyAddACoupon() {
-        final String couponConde = "FN2187";
+        final String couponCode = "FN2187";
 
-        findByTestId("coupon-code").sendKeys(couponConde);
+        findByTestId("coupon-code").sendKeys(couponCode);
         findByTestId("add-coupon-code").click();
     }
 

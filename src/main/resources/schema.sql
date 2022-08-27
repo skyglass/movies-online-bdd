@@ -12,7 +12,8 @@ create table if not exists dg_product (
     image_location nvarchar(max),
     price bigint not null,
     cost bigint not null,
-    m_id bigint not null
+    m_id bigint not null,
+    descrip nvarchar(max)
 );
 
 alter table dg_product
@@ -59,6 +60,7 @@ create table if not exists mrt_customer (
     city nvarchar(200) not null,
     zip nvarchar(9) not null
 );
+alter table mrt_customer add constraint if not exists uniqueUsername unique(username);
 
 create table if not exists mrt_location (
     id identity,
