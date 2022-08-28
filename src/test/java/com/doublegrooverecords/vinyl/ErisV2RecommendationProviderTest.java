@@ -5,75 +5,75 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ErisV2RecommendationProviderTest {
-    @Test
-    void throwsRuntimeException_whenTimeoutExceptionIsThrown() {
-        final RuntimeException exception = assertThrows(
-                RuntimeException.class,
-                () -> {
-                    final long timeOutCustomerId = 408L;
+  @Test
+  void throwsRuntimeException_whenTimeoutExceptionIsThrown() {
+    final RuntimeException exception = assertThrows(
+            RuntimeException.class,
+            () -> {
+              final long timeOutCustomerId = 408L;
 
-                    final ErisV2RecommendationProvider sut = new ErisV2RecommendationProvider();
+              final ErisV2RecommendationProvider sut = new ErisV2RecommendationProvider();
 
-                    sut.getRecommendedItems(1L, timeOutCustomerId);
-                }
-        );
+              sut.getRecommendedItems(1L, timeOutCustomerId);
+            }
+    );
 
-        assertThat(exception).hasMessage("Eris v2 Timeout");
-    }
+    assertThat(exception).hasMessage("Eris v2 Timeout");
+  }
 
-    @Test
-    void throwsRuntimeException_whenConnectionFails() {
-        final RuntimeException exception = assertThrows(
-                RuntimeException.class,
-                () -> {
-                    final long failedConnectionCustomerId = 500L;
+  @Test
+  void throwsRuntimeException_whenConnectionFails() {
+    final RuntimeException exception = assertThrows(
+            RuntimeException.class,
+            () -> {
+              final long failedConnectionCustomerId = 500L;
 
-                    final ErisV2RecommendationProvider sut = new ErisV2RecommendationProvider();
+              final ErisV2RecommendationProvider sut = new ErisV2RecommendationProvider();
 
-                    sut.getRecommendedItems(1L, failedConnectionCustomerId);
-                }
-        );
+              sut.getRecommendedItems(1L, failedConnectionCustomerId);
+            }
+    );
 
-        assertThat(exception).hasMessage("Eris v2 Failed To Connect");
-    }
+    assertThat(exception).hasMessage("Eris v2 Failed To Connect");
+  }
 
-    @Test
-    void returnsEmptyList_whenRecommendationForReturnsEmptyList() {
-        final long noRecommendationsCustomerId = 404L;
+  @Test
+  void returnsEmptyList_whenRecommendationForReturnsEmptyList() {
+    final long noRecommendationsCustomerId = 404L;
 
-        final ErisV2RecommendationProvider sut = new ErisV2RecommendationProvider();
+    final ErisV2RecommendationProvider sut = new ErisV2RecommendationProvider();
 
-        final List<Product> recommendedItems = sut.getRecommendedItems(1L, noRecommendationsCustomerId);
+    final List<Product> recommendedItems = sut.getRecommendedItems(1L, noRecommendationsCustomerId);
 
-        assertThat(recommendedItems).hasSize(0);
-    }
+    assertThat(recommendedItems).hasSize(0);
+  }
 
-    @Test
-    void throwsRuntimeException_whenRecommendationAreMissingCustomFields() {
-        final RuntimeException exception = assertThrows(
-                RuntimeException.class,
-                () -> {
-                    final long noCustomFieldsCustomerId = 204L;
+  @Test
+  void throwsRuntimeException_whenRecommendationAreMissingCustomFields() {
+    final RuntimeException exception = assertThrows(
+            RuntimeException.class,
+            () -> {
+              final long noCustomFieldsCustomerId = 204L;
 
-                    final ErisV2RecommendationProvider sut = new ErisV2RecommendationProvider();
+              final ErisV2RecommendationProvider sut = new ErisV2RecommendationProvider();
 
-                    sut.getRecommendedItems(1L, noCustomFieldsCustomerId);
-                });
+              sut.getRecommendedItems(1L, noCustomFieldsCustomerId);
+            });
 
-        assertThat(exception).hasMessage("Product missing custom fields for customer 204");
-    }
+    assertThat(exception).hasMessage("Product missing custom fields for customer 204");
+  }
 
-    @Test
-    void returnsProducts_whenRecommendationsAreReturned() {
-        final long customerWithRecommendations = 2L;
+  @Test
+  void returnsProducts_whenRecommendationsAreReturned() {
+    final long customerWithRecommendations = 2L;
 
-        final ErisV2RecommendationProvider sut = new ErisV2RecommendationProvider();
+    final ErisV2RecommendationProvider sut = new ErisV2RecommendationProvider();
 
-        final List<Product> recommendedItems = sut.getRecommendedItems(1L, customerWithRecommendations);
+    final List<Product> recommendedItems = sut.getRecommendedItems(1L, customerWithRecommendations);
 
-        assertThat(recommendedItems).isNotEmpty();
-    }
+    assertThat(recommendedItems).isNotEmpty();
+  }
 }

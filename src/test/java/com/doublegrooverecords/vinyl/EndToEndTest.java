@@ -7,49 +7,49 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.time.Duration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@AutoConfigureTestDatabase
 abstract class EndToEndTest {
-    @LocalServerPort
-    int port;
+  @LocalServerPort
+  int port;
 
-    WebDriver driver;
+  WebDriver driver;
 
-    @BeforeEach
-    public void setUp() {
-        driver = new ChromeDriver(new ChromeOptions().setHeadless(true));
-        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000L));
-    }
+  @BeforeEach
+  public void setUp() {
+    driver = new ChromeDriver(new ChromeOptions().setHeadless(true));
+    driver.manage().timeouts().implicitlyWait(Duration.ofMillis(1000L));
+  }
 
-    @AfterEach
-    public void tearDown() {
-        driver.close();
-    }
+  @AfterEach
+  public void tearDown() {
+    driver.close();
+  }
 
-    void givenUserOnHomePage() {
-        driver.get(String.format("http://127.0.0.1:%d", port));
-    }
+  void givenUserOnHomePage() {
+    driver.get(String.format("http://127.0.0.1:%d", port));
+  }
 
-    void givenUserOnAdminPage() {
-        signIn();
-        driver.get(String.format("http://127.0.0.1:%d/admin", port));
-    }
+  void givenUserOnAdminPage() {
+    signIn();
+    driver.get(String.format("http://127.0.0.1:%d/admin", port));
+  }
 
-    void signIn() {
-        driver.get(String.format("http://127.0.0.1:%d/admin", port));
-        driver.findElement(By.id("username")).sendKeys("admin");
-        driver.findElement(By.id("password")).sendKeys("super");
-        driver.findElement(By.tagName("button")).click();
-        driver.findElement(By.className("container"));
-    }
+  void signIn() {
+    driver.get(String.format("http://127.0.0.1:%d/admin", port));
+    driver.findElement(By.id("username")).sendKeys("admin");
+    driver.findElement(By.id("password")).sendKeys("super");
+    driver.findElement(By.tagName("button")).click();
+    driver.findElement(By.className("container"));
+  }
 
-    WebElement findByTestId(String testId) {
-        return driver.findElement(By.cssSelector(String.format("[data-testid='%s']", testId)));
-    }
+  WebElement findByTestId(String testId) {
+    return driver.findElement(By.cssSelector(String.format("[data-testid='%s']", testId)));
+  }
 }

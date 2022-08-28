@@ -62,6 +62,18 @@ create table if not exists mrt_customer (
 );
 alter table mrt_customer add constraint if not exists uniqueUsername unique(username);
 
+create table if not exists customer_view_dg_product (
+    customer_id bigint not null,
+    product_id bigint not null,
+    last_viewed_on timestamp not null,
+    primary key (customer_id, product_id)
+);
+
+alter table customer_view_dg_product
+    add foreign key (customer_id) references mrt_customer(id);
+alter table customer_view_dg_product
+    add foreign key (product_id) references dg_product(id);
+
 create table if not exists mrt_location (
     id identity,
     street_address_1 nvarchar not null,

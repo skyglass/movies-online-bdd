@@ -4,6 +4,13 @@ plugins {
     id 'java'
     id 'info.solidsoft.pitest' version '1.6.0'
     id 'jacoco'
+    id "org.springframework.cloud.contract" version "${springCloudVersion}"   
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-contract-dependencies:${springCloudVersion}"
+    }
 }
 
 group = 'com.doublegrooverecords'
@@ -13,6 +20,18 @@ sourceCompatibility = '15'
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
+    }
+
+    all {
+        resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group == 'org.junit.jupiter') {
+                details.useVersion '5.8.0'
+                details.because 'Because 5.8.0 has the randomized class runner functionality'
+            } else if (details.requested.group == 'org.junit.platform') {
+                details.useVersion '1.8.0'
+                details.because 'Because 1.8.0 has the randomized class runner functionality'
+            }
+        }
     }
 }
 
@@ -54,17 +73,30 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation('org.springframework.cloud:spring-cloud-starter-contract-stub-runner')    
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
-    implementation 'com.eris.recommendation:eris-engine:2.0.9'    
+    implementation 'com.eris.recommendation:eris-engine:2.0.9'
+    implementation 'me.paulschwarz:spring-dotenv:2.3.0'    
     testImplementation 'org.seleniumhq.selenium:selenium-java'
     testImplementation 'org.seleniumhq.selenium:selenium-chrome-driver'
+    testRuntimeOnly 'com.doublegrooverecords:double-groove-services:+:stubs'    
     implementation 'com.h2database:h2'
+}
+
+contracts {
+    testMode = 'MockMVC'
 }
 
 test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
+    systemProperty 'spring.profiles.active', 'test'
+    systemProperty 'java.util.logging.config.file', file('src/test/resources/logging.properties')
+
+    testLogging {
+        events 'PASSED', 'FAILED', 'SKIPPED'
+    }
 }

@@ -20,4 +20,9 @@ public class Publisher {
         Publisher other = (Publisher)o;
         return other.getId() == this.getId();
     }
+
+    @Override
+    public int hashCode() {
+        return getId() == null ? 0 : getId().intValue();
+    }
 }

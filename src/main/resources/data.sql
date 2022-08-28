@@ -126,6 +126,10 @@ merge into mrt_customer
     key(id)
     values (5, 'admin', '$2a$10$1flzWDVVKHt9brSvFOpsTO2/.ryl.5NPDzQL2XbdiPXuquoZHnabC', '', '1120 N Ashland Ave', '', 'Chicago', 'Illinois', '60622');
 
+merge into mrt_customer
+    key(id)
+    values (1313, 'datatests', '$2a$10$M.vRKKBKpFxSFzedNcsYGOm6cDCYabljxs1smaDAnIuBgON5m8qaG', '', '174 N 11th st', '', 'Brooklyn', 'Pennsylvania', '11215');
+
 merge into mrt_location
     key(id)
     values (15, '4741 Camel Back Road', 'corporate office', 'Tulsa', 'Oklahoma', '74145');
